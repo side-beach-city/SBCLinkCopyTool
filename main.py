@@ -1,8 +1,8 @@
-from os import times
+from typing import Optional
 import yaml
 import tkinter
 import tkinter.ttk
-import tkinter.simpledialog
+import webbrowser
 
 from parsers.rss10 import RSS10Parser
 from parsers.rss20 import RSS20Parser
@@ -14,8 +14,9 @@ class Entry:
 
 class Application:
   def start(self) -> None:
+    self.listboxes: list[tkinter.Listbox] = []
     self.entries = data = self.getlist()
-    window = self.creategui(data)
+    self.window = window = self.creategui(data)
     window.mainloop()
 
   def getlist(self) -> list[Entry]:
@@ -46,12 +47,13 @@ class Application:
         content.insert(tkinter.END,
         item["title"][len(entry.title):] if item["title"].startswith(entry.title) else item["title"])
       content.pack(expand=True, fill=tkinter.BOTH)
+      self.listboxes.append(content)
       note.add(content, text=entry.title)
     return note
 
   def getbuttonbar(self, owner: tkinter.Frame) -> tkinter.Frame:
     frame = tkinter.Frame(owner)
-    openbtn = tkinter.Button(frame, text="OPEN")
+    openbtn = tkinter.Button(frame, text="OPEN", command=self.on_openbtn_click)
     openbtn.pack(fill=tkinter.X, side=tkinter.LEFT, expand=True, padx=4, pady=4)
     copyvalues = tkinter.StringVar(frame)
     copyvalues.set("COPY")
@@ -59,6 +61,16 @@ class Application:
       "Plain", "Markdown", "URL", "Markdown+")
     copybtn.pack(fill=tkinter.X, side=tkinter.LEFT, expand=True, padx=4, pady=4)
     return frame
+
+  def on_openbtn_click(self) -> None:
+    item = self.getcurrentitem()
+    if item is not None:
+      webbrowser.open(item["link"])
+
+  def getcurrentitem(self) -> Optional[dict[str, str]]:
+    index = self.window.children["!notebook"].index(self.window.children["!notebook"].select())
+    return self.entries[index].items[self.listboxes[index].curselection()[0]] \
+      if len(self.listboxes[index].curselection()) == 1 else None
 
 if __name__ == "__main__":
   Application().start()
