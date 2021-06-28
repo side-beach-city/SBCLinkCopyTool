@@ -109,12 +109,14 @@ class Application:
     ボタンバー
     """
     frame = tkinter.Frame(owner)
+    candidates = []
+    for c in self.config["copytext"]:
+      candidates.append(c["style"])
     openbtn = tkinter.Button(frame, text="OPEN", command=self.on_openbtn_click)
     openbtn.pack(fill=tkinter.X, side=tkinter.LEFT, expand=True, padx=4, pady=4)
     copyvalues = tkinter.StringVar(frame)
     copyvalues.set("COPY")
-    copybtn = tkinter.OptionMenu(frame, copyvalues,
-      "Plain", "Markdown", "URL Only", "Plain+", command=self.on_copybtn_click)
+    copybtn = tkinter.OptionMenu(frame, copyvalues, *candidates, command=self.on_copybtn_click)
     copybtn.pack(fill=tkinter.X, side=tkinter.LEFT, expand=True, padx=4, pady=4)
     return frame
 
@@ -137,17 +139,14 @@ class Application:
     item = self.getcurrentitem()
     if item is not None:
       text = ""
-      if selection == "Plain":
-        text = f"{item['title']} {item['link']}"
-      elif selection == "Markdown":
-        text = f"[{item['title']}]({item['link']})"
-      elif selection == "URL Only":
-        text = f"{item['link']}"
-      elif selection == "Plain+":
-        text = f"{item['title']} [{item['link']}]({item['link']})"
+      for c in self.config["copytext"]:
+        if selection == c["style"]:
+          text = c["text"].replace("{URL}", item["link"]) \
+            .replace("{TEXT}", item["title"]) \
+            .replace("{DESC}", item["description"])
+          break
       if text != "":
         pyperclip.copy(text)
-
 
   def getcurrentitem(self) -> Optional[dict[str, str]]:
     """

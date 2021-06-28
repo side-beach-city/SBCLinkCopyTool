@@ -1,3 +1,16 @@
+copytext:
+  -
+    style: Plain
+    text: "{TEXT} {URL}"
+  -
+    style: Markdown
+    text: "[{TEXT}]({URL})"
+  -
+    style: URL Only
+    text: "{URL}"
+  -
+    style: Plain+
+    text: "{TEXT} [{URL}]({URL})"
 datalist:
   -
     title: SBCast.
