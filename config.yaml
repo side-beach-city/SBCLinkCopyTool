@@ -1,8 +1,9 @@
--
-  title: SBCast.
-  url: https://sbc.yokohama/feed/podcast
-  class: RSS20Parser
--
-  title: SBC.オープンマイク
-  url: https://www.youtube.com/feeds/videos.xml?playlist_id=PLrPVslFukDQo7l5RCqAZtKDl6tUyMAFWH
-  class: RSS10Parser
+datalist:
+  -
+    title: SBCast.
+    url: https://sbc.yokohama/feed/podcast
+    class: RSS20Parser
+  -
+    title: SBC.オープンマイク
+    url: https://www.youtube.com/feeds/videos.xml?playlist_id=PLrPVslFukDQo7l5RCqAZtKDl6tUyMAFWH
+    class: RSS10Parser

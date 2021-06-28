@@ -30,6 +30,8 @@ class Application:
     """
     プログラムを開始する
     """
+    with open("config.yaml", "r", encoding="utf-8") as f:
+      self.config = yaml.safe_load(f)
     self.listboxes: list[tkinter.Listbox] = []
     self.entries = data = self.getlist()
     self.window = window = self.creategui(data)
@@ -44,16 +46,13 @@ class Application:
     エントリーリスト
     """
     result = []
-    with open("config.yaml", "r", encoding="utf-8") as f:
-      data = yaml.safe_load(f)
-
-      for item in data:
-        i = None
-        if item["class"] == "RSS10Parser":
-          i = RSS10Parser(item["url"]).getlist()
-        elif item["class"] == "RSS20Parser":
-          i = RSS20Parser(item["url"]).getlist()
-        result.append(Entry(item["title"], i))
+    for item in self.config["datalist"]:
+      i = None
+      if item["class"] == "RSS10Parser":
+        i = RSS10Parser(item["url"]).getlist()
+      elif item["class"] == "RSS20Parser":
+        i = RSS20Parser(item["url"]).getlist()
+      result.append(Entry(item["title"], i))
     return result
 
   def creategui(self, entries: list[Entry]) -> tkinter.Tk:
