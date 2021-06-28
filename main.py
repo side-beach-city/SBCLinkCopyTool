@@ -4,6 +4,8 @@ import tkinter
 import tkinter.ttk
 import webbrowser
 
+import pyperclip
+
 from parsers.rss10 import RSS10Parser
 from parsers.rss20 import RSS20Parser
 
@@ -58,7 +60,7 @@ class Application:
     copyvalues = tkinter.StringVar(frame)
     copyvalues.set("COPY")
     copybtn = tkinter.OptionMenu(frame, copyvalues,
-      "Plain", "Markdown", "URL", "Markdown+")
+      "Plain", "Markdown", "URL Only", "Plain+", command=self.on_copybtn_click)
     copybtn.pack(fill=tkinter.X, side=tkinter.LEFT, expand=True, padx=4, pady=4)
     return frame
 
@@ -66,6 +68,22 @@ class Application:
     item = self.getcurrentitem()
     if item is not None:
       webbrowser.open(item["link"])
+
+  def on_copybtn_click(self, selection: str) -> None:
+    item = self.getcurrentitem()
+    if item is not None:
+      text = ""
+      if selection == "Plain":
+        text = f"{item['title']} {item['link']}"
+      elif selection == "Markdown":
+        text = f"[{item['title']}]({item['link']})"
+      elif selection == "URL Only":
+        text = f"{item['link']}"
+      elif selection == "Plain+":
+        text = f"{item['title']} [{item['link']}]({item['link']})"
+      if text != "":
+        pyperclip.copy(text)
+
 
   def getcurrentitem(self) -> Optional[dict[str, str]]:
     index = self.window.children["!notebook"].index(self.window.children["!notebook"].select())
