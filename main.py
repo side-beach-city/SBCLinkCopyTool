@@ -2,6 +2,7 @@ from os import times
 import yaml
 import tkinter
 import tkinter.ttk
+import tkinter.simpledialog
 
 from parsers.rss10 import RSS10Parser
 from parsers.rss20 import RSS20Parser
@@ -33,8 +34,12 @@ class Application:
 
   def creategui(self, entries: list[Entry]) -> tkinter.Tk:
     window = tkinter.Tk("Tool")
-    note = tkinter.ttk.Notebook(window)
-    note.pack(expand=True, fill=tkinter.BOTH)
+    self.getbuttonbar(window).pack(expand=True, side=tkinter.BOTTOM, fill=tkinter.X)
+    self.gettabs(window, entries).pack(expand=True, fill=tkinter.BOTH)
+    return window
+
+  def gettabs(self, owner: tkinter.Tk, entries: list[Entry]) -> tkinter.ttk.Notebook:
+    note = tkinter.ttk.Notebook(owner)
     for entry in entries:
       content = tkinter.Listbox(note)
       for item in entry.items:
@@ -42,8 +47,18 @@ class Application:
         item["title"][len(entry.title):] if item["title"].startswith(entry.title) else item["title"])
       content.pack(expand=True, fill=tkinter.BOTH)
       note.add(content, text=entry.title)
-    return window
+    return note
 
+  def getbuttonbar(self, owner: tkinter.Frame) -> tkinter.Frame:
+    frame = tkinter.Frame(owner)
+    openbtn = tkinter.Button(frame, text="OPEN")
+    openbtn.pack(fill=tkinter.X, side=tkinter.LEFT, expand=True, padx=4, pady=4)
+    copyvalues = tkinter.StringVar(frame)
+    copyvalues.set("COPY")
+    copybtn = tkinter.OptionMenu(frame, copyvalues,
+      "Plain", "Markdown", "URL", "Markdown+")
+    copybtn.pack(fill=tkinter.X, side=tkinter.LEFT, expand=True, padx=4, pady=4)
+    return frame
 
 if __name__ == "__main__":
   Application().start()
