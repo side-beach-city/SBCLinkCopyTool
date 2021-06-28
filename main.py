@@ -68,6 +68,7 @@ class Application:
     ウィンドウオブジェクト
     """
     window = tkinter.Tk("Tool")
+    window.attributes('-toolwindow', True)
     self.getbuttonbar(window).pack(expand=True, side=tkinter.BOTTOM, fill=tkinter.X)
     self.gettabs(window, entries).pack(expand=True, fill=tkinter.BOTH)
     return window
