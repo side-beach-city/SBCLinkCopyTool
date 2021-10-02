@@ -1,9 +1,11 @@
+import ssl
 import urllib.request
 import xml.etree.ElementTree
 
 class RSS20Parser:
   def __init__(self, url: str) -> None:
     self.url = url
+    ssl._create_default_https_context = ssl._create_unverified_context
 
   def getlist(self) -> list[dict[str, str]]:
     result = []
